@@ -14,6 +14,12 @@ wip - an attempt to build an async online chess server using rust with web assem
 - [ ] can open multiple games with multiple players
 - [ ] close connection if no activity within time limit
 ##### chess
-- [ ] implement game logic
+- [ ] draw board and pieces
+- [ ] allow piece movement
+- [ ] implement piece capturing
+- [ ] implement castling
+- [ ] implement en passant
+- [ ] disallow illegal moves
 - [ ] implement elo system
 - [ ] implement different time controls
+- [ ] implement pre-moving
