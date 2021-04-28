@@ -37,7 +37,7 @@ struct User {
 }
 
 enum Page {
-    Landing(page::landing::Model),
+    Landing,
     Login(page::login::Model),
     Register(page::register::Model),
     Home(page::home::Model),
