@@ -11,7 +11,10 @@ const GAME: &str = "game";
 //     Init
 // ------ ------
 
-fn init(url: Url, _: &mut impl Orders<Msg>) -> Model {
+fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
+    orders
+        .subscribe(Msg::UrlChanged);
+
     Model { 
         ctx: Context {
             user: None,
@@ -47,6 +50,16 @@ enum Page {
     Register(page::register::Model),
     Home(page::home::Model),
     Game(page::game::Model),
+    NotFound,
+}
+
+impl Page {
+    fn init(mut url: Url, orders: &mut impl Orders<Msg>) -> Self {
+        match url.remaining_path_parts().as_slice() {
+            [] => Self::Landing,
+            _ => Self::NotFound,
+        }
+    }
 }
 
 // ------ ------
