@@ -2,6 +2,11 @@ use seed::{prelude::*, *};
 
 mod page;
 
+const LOGIN: &str = "login";
+const REGISTER: &str = "register";
+const HOME: &str = "home";
+const GAME: &str = "game";
+
 // ------ ------
 //     Init
 // ------ ------
@@ -43,6 +48,30 @@ enum Page {
     Home(page::home::Model),
     Game(page::game::Model),
 }
+
+// ------ ------
+//     Urls
+// ------ ------
+
+struct_urls!();
+impl<'a> Urls<'a> {
+    fn landing(self) -> Url {
+        self.base_url()
+    }
+    fn login(self) -> Url {
+        self.base_url().add_path_part(LOGIN)
+    }
+    fn register(self) -> Url {
+        self.base_url().add_path_part(REGISTER)
+    }
+    fn home(self) -> Url {
+        self.base_url().add_path_part(HOME)
+    }
+    fn game(self) -> Url {
+        self.base_url().add_path_part(GAME)
+    }
+}
+
 
 // ------ ------
 //    Update
