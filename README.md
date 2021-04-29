@@ -1,5 +1,5 @@
 # chess
-wip - an attempt to build an async online chess server using rust with web assembly.
+wip - an attempt to build an async online chess server using rust and web assembly.
 
 ### todo
 ##### accounts / authentication
