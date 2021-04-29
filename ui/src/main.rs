@@ -21,7 +21,7 @@ fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
             token: None,
         },
         base_url: url.to_base_url(),
-        page: Page::Landing,
+        page: Page::init(url, orders),
     }
 }
 
@@ -57,6 +57,18 @@ impl Page {
     fn init(mut url: Url, orders: &mut impl Orders<Msg>) -> Self {
         match url.remaining_path_parts().as_slice() {
             [] => Self::Landing,
+            [LOGIN] => Self::Login(
+                page::login::init(url, &mut orders.proxy(Msg::LoginMsg))
+            ),
+            [REGISTER] => Self::Register(
+                page::register::init(url, &mut orders.proxy(Msg::RegisterMsg))
+            ),
+            [HOME] => Self::Home(
+                page::home::init(url, &mut orders.proxy(Msg::HomeMsg))
+            ),
+            [GAME] => Self::Game(
+                page::game::init(url, &mut orders.proxy(Msg::GameMsg))
+            ),
             _ => Self::NotFound,
         }
     }
@@ -91,14 +103,46 @@ impl<'a> Urls<'a> {
 // ------ ------
 
 enum Msg {
-    UrlChanged(subs::UrlChanged)
+    UrlChanged(subs::UrlChanged),
+
+    HomeMsg(page::home::Msg),
+    LoginMsg(page::login::Msg),
+    RegisterMsg(page::register::Msg),
+    GameMsg(page::game::Msg),
 }
 
-fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>){
+fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg{
         Msg::UrlChanged(subs::UrlChanged(url)) => {
             log!("url changed", url)
-        }
+        },
+
+        // ------ pages -------
+
+        Msg::LoginMsg(msg) => {
+            log!("got login msg: ", msg);
+            if let Page::Login(model) = &mut model.page {
+                page::login::update(msg, model, &mut orders.proxy(Msg::LoginMsg))
+            }
+        },
+        Msg::RegisterMsg(msg) => {
+            log!("got register msg: ", msg);
+            if let Page::Register(model) = &mut model.page {
+                page::register::update(msg, model, &mut orders.proxy(Msg::RegisterMsg))
+            }
+        },
+        Msg::HomeMsg(msg) => {
+            log!("got home msg: ", msg);
+            if let Page::Home(model) = &mut model.page {
+                page::home::update(msg, model, &mut orders.proxy(Msg::HomeMsg))
+            }
+        },
+        Msg::GameMsg(msg) => {
+            log!("got game msg: ", msg);
+            if let Page::Game(model) = &mut model.page {
+                page::game::update(msg, model, &mut orders.proxy(Msg::GameMsg))
+            }
+        },
     }
 }
 
@@ -107,7 +151,21 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>){
 // ------ ------
 
 fn view(model: &Model) -> Node<Msg> {
-    div!["Root view"]
+    view_content(&model.page)
+}
+
+fn view_content(page: &Page) -> Node<Msg> {
+    div![
+        C!["container"],
+        match page {
+            Page::Landing => page::landing::view(),
+            Page::Login(model) => page::login::view(model).map_msg(Msg::LoginMsg),
+            Page::Register(model) => page::register::view(model).map_msg(Msg::RegisterMsg),
+            Page::Home(model) => page::home::view(model).map_msg(Msg::HomeMsg),
+            Page::Game(model) => page::game::view(model).map_msg(Msg::GameMsg),
+            Page::NotFound => page::not_found::view(),
+        }
+    ]
 }
 
 // ------ ------
