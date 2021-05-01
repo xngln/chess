@@ -1,3 +1,8 @@
 /target
-/ui/dist
 Cargo.lock
+
+# build dir for trunk
+/ui/dist
+
+# file built by tailwind css
+/ui/index.scss 
