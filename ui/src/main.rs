@@ -12,10 +12,9 @@ const GAME: &str = "game";
 // ------ ------
 
 fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
-    orders
-        .subscribe(Msg::UrlChanged);
+    orders.subscribe(Msg::UrlChanged);
 
-    Model { 
+    Model {
         ctx: Context {
             user: None,
             token: None,
@@ -29,7 +28,7 @@ fn init(url: Url, orders: &mut impl Orders<Msg>) -> Model {
 //     Model
 // ------ ------
 
-struct Model { 
+struct Model {
     ctx: Context,
     base_url: Url,
     page: Page,
@@ -57,18 +56,12 @@ impl Page {
     fn init(mut url: Url, orders: &mut impl Orders<Msg>) -> Self {
         match url.remaining_path_parts().as_slice() {
             [] => Self::Landing,
-            [LOGIN] => Self::Login(
-                page::login::init(url, &mut orders.proxy(Msg::LoginMsg))
-            ),
-            [REGISTER] => Self::Register(
-                page::register::init(url, &mut orders.proxy(Msg::RegisterMsg))
-            ),
-            [HOME] => Self::Home(
-                page::home::init(url, &mut orders.proxy(Msg::HomeMsg))
-            ),
-            [GAME] => Self::Game(
-                page::game::init(url, &mut orders.proxy(Msg::GameMsg))
-            ),
+            [LOGIN] => Self::Login(page::login::init(url, &mut orders.proxy(Msg::Login))),
+            [REGISTER] => {
+                Self::Register(page::register::init(url, &mut orders.proxy(Msg::Register)))
+            }
+            [HOME] => Self::Home(page::home::init(url, &mut orders.proxy(Msg::Home))),
+            [GAME] => Self::Game(page::game::init(url, &mut orders.proxy(Msg::Game))),
             _ => Self::NotFound,
         }
     }
@@ -97,7 +90,6 @@ impl<'a> Urls<'a> {
     }
 }
 
-
 // ------ ------
 //    Update
 // ------ ------
@@ -105,44 +97,43 @@ impl<'a> Urls<'a> {
 enum Msg {
     UrlChanged(subs::UrlChanged),
 
-    HomeMsg(page::home::Msg),
-    LoginMsg(page::login::Msg),
-    RegisterMsg(page::register::Msg),
-    GameMsg(page::game::Msg),
+    Home(page::home::Msg),
+    Login(page::login::Msg),
+    Register(page::register::Msg),
+    Game(page::game::Msg),
 }
 
 fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
-    match msg{
+    match msg {
         Msg::UrlChanged(subs::UrlChanged(url)) => {
             log!("url changed", url)
-        },
+        }
 
         // ------ pages -------
-
-        Msg::LoginMsg(msg) => {
+        Msg::Login(msg) => {
             log!("got login msg: ", msg);
             if let Page::Login(model) = &mut model.page {
-                page::login::update(msg, model, &mut orders.proxy(Msg::LoginMsg))
+                page::login::update(msg, model, &mut orders.proxy(Msg::Login))
             }
-        },
-        Msg::RegisterMsg(msg) => {
+        }
+        Msg::Register(msg) => {
             log!("got register msg: ", msg);
             if let Page::Register(model) = &mut model.page {
-                page::register::update(msg, model, &mut orders.proxy(Msg::RegisterMsg))
+                page::register::update(msg, model, &mut orders.proxy(Msg::Register))
             }
-        },
-        Msg::HomeMsg(msg) => {
+        }
+        Msg::Home(msg) => {
             log!("got home msg: ", msg);
             if let Page::Home(model) = &mut model.page {
-                page::home::update(msg, model, &mut orders.proxy(Msg::HomeMsg))
+                page::home::update(msg, model, &mut orders.proxy(Msg::Home))
             }
-        },
-        Msg::GameMsg(msg) => {
+        }
+        Msg::Game(msg) => {
             log!("got game msg: ", msg);
             if let Page::Game(model) = &mut model.page {
-                page::game::update(msg, model, &mut orders.proxy(Msg::GameMsg))
+                page::game::update(msg, model, &mut orders.proxy(Msg::Game))
             }
-        },
+        }
     }
 }
 
@@ -159,10 +150,10 @@ fn view_content(page: &Page) -> Node<Msg> {
         C!["container"],
         match page {
             Page::Landing => page::landing::view(),
-            Page::Login(model) => page::login::view(model).map_msg(Msg::LoginMsg),
-            Page::Register(model) => page::register::view(model).map_msg(Msg::RegisterMsg),
-            Page::Home(model) => page::home::view(model).map_msg(Msg::HomeMsg),
-            Page::Game(model) => page::game::view(model).map_msg(Msg::GameMsg),
+            Page::Login(model) => page::login::view(model).map_msg(Msg::Login),
+            Page::Register(model) => page::register::view(model).map_msg(Msg::Register),
+            Page::Home(model) => page::home::view(model).map_msg(Msg::Home),
+            Page::Game(model) => page::game::view(model).map_msg(Msg::Game),
             Page::NotFound => page::not_found::view(),
         }
     ]

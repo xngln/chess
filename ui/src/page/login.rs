@@ -5,34 +5,34 @@ use seed::{prelude::*, *};
 // ------ ------
 
 pub fn init(url: Url, _: &mut impl Orders<Msg>) -> Model {
-  Model{
-    form: Form {
-      username: String::new(),
-      password: String::new(),
-      
-      errors: FormErrors::default(),
+    Model {
+        form: Form {
+            username: String::new(),
+            password: String::new(),
+
+            errors: FormErrors::default(),
+        },
     }
-  }
 }
 
 // ------ ------
 //     Model
 // ------ ------
 pub struct Model {
-  form: Form,
+    form: Form,
 }
 
 struct Form {
-  username: String,
-  password: String,
+    username: String,
+    password: String,
 
-  errors: FormErrors,
+    errors: FormErrors,
 }
 
 #[derive(Default)]
 struct FormErrors {
-  username: Option<String>,
-  password: Option<String>,
+    username: Option<String>,
+    password: Option<String>,
 }
 
 // ------ ------
@@ -40,25 +40,25 @@ struct FormErrors {
 // ------ ------
 
 pub enum Msg {
-  LoginComplete(Option<FetchError>),
-  ClearErrors,
-  UsernameEntered(String),
-  PasswordEntered(String),
-  
-  Login,
+    LoginComplete(Option<FetchError>),
+    ClearErrors,
+    UsernameEntered(String),
+    PasswordEntered(String),
+
+    Login,
 }
 
 pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
-  match msg {
-    Msg::LoginComplete(None) => {},
-    Msg::LoginComplete(Some(fetch_error)) => {},
-    Msg::ClearErrors => {},
-    
-    Msg::UsernameEntered(username) => {},
-    Msg::PasswordEntered(password) => {},
+    match msg {
+        Msg::LoginComplete(None) => {}
+        Msg::LoginComplete(Some(fetch_error)) => {}
+        Msg::ClearErrors => {}
 
-    Msg::Login => {},
-  }
+        Msg::UsernameEntered(username) => {}
+        Msg::PasswordEntered(password) => {}
+
+        Msg::Login => {}
+    }
 }
 
 // ------ ------
@@ -66,5 +66,5 @@ pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 // ------ -------
 
 pub fn view(model: &Model) -> Node<Msg> {
-  div!["Login view"]
+    div!["Login view"]
 }

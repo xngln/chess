@@ -1,12 +1,13 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 #[get("/")]
 fn index() -> &'static str {
-  "this is the home page of chess api"
+    "this is the home page of chess api"
 }
 
 fn main() {
-  rocket::ignite().mount("/", routes![index]).launch();
+    rocket::ignite().mount("/", routes![index]).launch();
 }

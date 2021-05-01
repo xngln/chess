@@ -5,37 +5,37 @@ use seed::{prelude::*, *};
 // ------ ------
 
 pub fn init(url: Url, _: &mut impl Orders<Msg>) -> Model {
-  Model{
-    form: Form {
-      username: String::new(),
-      password: String::new(),
-      confirm_password: String::new(),
-      
-      errors: FormErrors::default(),
+    Model {
+        form: Form {
+            username: String::new(),
+            password: String::new(),
+            confirm_password: String::new(),
+
+            errors: FormErrors::default(),
+        },
     }
-  }
 }
 
 // ------ ------
 //     Model
 // ------ ------
 pub struct Model {
-  form: Form,
+    form: Form,
 }
 
 struct Form {
-  username: String,
-  password: String,
-  confirm_password: String,
+    username: String,
+    password: String,
+    confirm_password: String,
 
-  errors: FormErrors,
+    errors: FormErrors,
 }
 
 #[derive(Default)]
 struct FormErrors {
-  username: Option<String>,
-  password: Option<String>,
-  confirm_password: Option<String>,
+    username: Option<String>,
+    password: Option<String>,
+    confirm_password: Option<String>,
 }
 
 // ------ ------
@@ -43,27 +43,27 @@ struct FormErrors {
 // ------ ------
 
 pub enum Msg {
-  RegisterComplete(Option<FetchError>),
-  ClearErrors,
-  UsernameEntered(String),
-  PasswordEntered(String),
-  ConfirmPasswordEntered(String),
-  
-  Register,
+    RegisterComplete(Option<FetchError>),
+    ClearErrors,
+    UsernameEntered(String),
+    PasswordEntered(String),
+    ConfirmPasswordEntered(String),
+
+    Register,
 }
 
 pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
-  match msg {
-    Msg::RegisterComplete(None) => {},
-    Msg::RegisterComplete(Some(fetch_error)) => {},
-    Msg::ClearErrors => {},
-    
-    Msg::UsernameEntered(username) => {},
-    Msg::PasswordEntered(password) => {},
-    Msg::ConfirmPasswordEntered(confirm_password) => {},
+    match msg {
+        Msg::RegisterComplete(None) => {}
+        Msg::RegisterComplete(Some(fetch_error)) => {}
+        Msg::ClearErrors => {}
 
-    Msg::Register => {},
-  }
+        Msg::UsernameEntered(username) => {}
+        Msg::PasswordEntered(password) => {}
+        Msg::ConfirmPasswordEntered(confirm_password) => {}
+
+        Msg::Register => {}
+    }
 }
 
 // ------ ------
@@ -71,5 +71,5 @@ pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 // ------ -------
 
 pub fn view(model: &Model) -> Node<Msg> {
-  div!["Register view"]
+    div!["Register view"]
 }

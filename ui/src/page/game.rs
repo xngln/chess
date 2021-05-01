@@ -5,28 +5,28 @@ use seed::{prelude::*, *};
 // ------ ------
 
 pub fn init(url: Url, _: &mut impl Orders<Msg>) -> Model {
-  Model{
-    game_state: String::new(),
-    player: User {
-      username: String::new(),
-    },
-    opponent: User {
-      username: String::new(),
-    },
-  }
+    Model {
+        game_state: String::new(),
+        player: User {
+            username: String::new(),
+        },
+        opponent: User {
+            username: String::new(),
+        },
+    }
 }
 
 // ------ ------
 //     Model
 // ------ ------
 pub struct Model {
-  game_state: String,
-  player: User,
-  opponent: User,
+    game_state: String,
+    player: User,
+    opponent: User,
 }
 
 struct User {
-  username: String,
+    username: String,
 }
 
 // ------ ------
@@ -34,15 +34,15 @@ struct User {
 // ------ ------
 
 pub enum Msg {
-  MakeMove,
-  InvalidMove,
+    MakeMove,
+    InvalidMove,
 }
 
 pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
-  match msg {
-    MakeMove => {},
-    InvalidMove => {},
-  }
+    match msg {
+        MakeMove => {}
+        InvalidMove => {}
+    }
 }
 
 // ------ ------
@@ -50,5 +50,5 @@ pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 // ------ -------
 
 pub fn view(model: &Model) -> Node<Msg> {
-  div!["Game view"]
+    div!["Game view"]
 }
