@@ -1,0 +1,43 @@
+[tasks.lint]
+description = "Link with Clippy"
+install_crate = { rustup_component_name = "clippy", binary = "cargo-clippy"}
+command = "cargo"
+args = ["clippy", "--all-features", "--", "--deny", "warnings", "--deny",
+        "clippy::pedantic", "--deny", "clippy::nursery"]
+
+[tasks.format]
+description = "Format with rustfmt"
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt"]
+
+[tasks.build-assets]
+description = "Build tailwind and custom css"
+command = "npx"
+args = ["tailwindcss-cli@latest", "build", "./styles/custom.scss", "-o", "./index.scss"]
+
+[tasks.build]
+description = "build ui using trunk"
+command = "trunk"
+args = ["build"]
+
+[tasks.serve]
+description = "build and serve ui using trunk"
+command = "trunk"
+args = ["serve"]
+
+# flows
+
+[tasks.ui]
+dependencies = [
+  "format",
+  "build-assets",
+  "build",
+]
+
+[tasks.ui-serve]
+dependencies = [
+  "format",
+  "build-assets",
+  "serve",
+]
