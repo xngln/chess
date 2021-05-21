@@ -1,5 +1,6 @@
 use seed::{prelude::*, *};
 
+mod assets;
 mod page;
 
 const LOGIN: &str = "login";
