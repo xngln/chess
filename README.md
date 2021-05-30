@@ -1,7 +1,7 @@
 # michess
 wip - an attempt to build an async online chess server using rust and web assembly.
 Web server is [Warp](https://github.com/seanmonstar/warp). Runtime is [Tokio](https://github.com/tokio-rs/tokio). DB is PostgreSQL and caching of game state is done with Redis. Server uses GraphQL with the [async-graphql](https://github.com/async-graphql/async-graphql) implementation.
-UI uses Rust WASM and is built using [Trunk](https://github.com/thedodd/trunk).
+UI uses Rust WASM on the [Seed](https://github.com/seed-rs/seed) framework with Tailwind CSS and is built using [Trunk](https://github.com/thedodd/trunk).
 
 #### setup & requirements
 - install [Rust v1.53 or above](https://www.rust-lang.org/tools/install)
