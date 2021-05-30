@@ -23,3 +23,8 @@ wip - an attempt to build an async online chess server using rust and web assemb
 - [ ] implement elo system
 - [ ] implement different time controls
 - [ ] implement pre-moving
+
+#### setup & requirements
+- install [Rust v1.53 or above](https://www.rust-lang.org/tools/install)
+- the ui is built using a Rust WASM build tool called Trunk. Follow these [instructions](https://trunkrs.dev/#install) to get Trunk installed
+- database is PostgreSQL. We use [SQLx](https://github.com/launchbadge/sqlx) to interact with the db. [Installing the CLI](https://github.com/launchbadge/sqlx/tree/master/sqlx-cli) will be useful to run the migrations
