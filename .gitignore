@@ -6,3 +6,6 @@ Cargo.lock
 
 # file built by tailwind css
 /ui/index.scss 
+
+# environment variables
+/backend/.env
