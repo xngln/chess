@@ -3,12 +3,17 @@ mod model;
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptySubscription, Schema};
 use async_graphql_warp::{BadRequest, Response};
+use dotenv::dotenv;
 use http::StatusCode;
 use std::convert::Infallible;
 use warp::{Filter, Rejection, http::Response as HttpResponse};
 
+mod db;
+
 #[tokio::main]
 async fn main() {
+    dotenv().ok();
+
     let schema = Schema::build(model::QueryRoot, model::MutationRoot, EmptySubscription)
         .finish();
 
