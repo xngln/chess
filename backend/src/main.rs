@@ -14,7 +14,10 @@ mod db;
 async fn main() {
     dotenv().ok();
 
+    let conn_pool = db::create_connection_pool().await;
+
     let schema = Schema::build(model::QueryRoot, model::MutationRoot, EmptySubscription)
+        .data(conn_pool)
         .finish();
 
     println!("Playground: http://localhost:8000");

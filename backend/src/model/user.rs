@@ -1,4 +1,5 @@
-use async_graphql::{Object, SimpleObject, ID, Result};
+use async_graphql::{Context, Object, SimpleObject, ID, Result};
+use sqlx::postgres::PgPool;
 
 #[derive(Clone, SimpleObject)]
 pub struct User {
@@ -33,9 +34,26 @@ impl super::QueryRoot {
 
 #[Object]
 impl super::MutationRoot {
-    async fn signup(&self,  username: String, password: String) -> Result<bool> {
+    async fn signup(&self,  ctx: &Context<'_>, username: String, password: String) -> Result<i64> {
         // User signup
+        let password_hash = "test password hash".to_string();
+        let salt = "testsalt".to_string();
 
-        Ok(true)
+        let pool = ctx.data::<PgPool>().expect("Unable to access connection pool inside mutation resolver");
+
+        create_user(&pool, username, password_hash, salt).await
     }
+}
+
+async fn create_user(pool: &PgPool, username: String, password_hash: String, salt: String) -> Result<i64> {
+    let record = sqlx::query!(
+        r#"
+RETURNING id
+        "#,
+        
+    )
+    .fetch_one(pool)
+    .await?;
+
+    Ok(record.id)
 }
