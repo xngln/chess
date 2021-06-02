@@ -1,5 +1,3 @@
-mod model;
-
 use async_graphql::http::{playground_source, GraphQLPlaygroundConfig};
 use async_graphql::{EmptySubscription, Schema};
 use async_graphql_warp::{BadRequest, Response};
@@ -9,6 +7,7 @@ use std::convert::Infallible;
 use warp::{Filter, Rejection, http::Response as HttpResponse};
 
 mod db;
+mod model;
 
 #[tokio::main]
 async fn main() {
