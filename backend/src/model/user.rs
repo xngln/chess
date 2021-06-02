@@ -1,3 +1,4 @@
+use crate::auth;
 use async_graphql::{Context, Object, SimpleObject, ID, Result};
 use sqlx::postgres::PgPool;
 
@@ -36,8 +37,8 @@ impl super::QueryRoot {
 impl super::MutationRoot {
     async fn signup(&self,  ctx: &Context<'_>, username: String, password: String) -> Result<i64> {
         // User signup
-        let password_hash = "test password hash".to_string();
-        let salt = "testsalt".to_string();
+        let salt = auth::generate_rand_salt();
+        let password_hash = auth::hash_password(password);
 
         let pool = ctx.data::<PgPool>().expect("Unable to access connection pool inside mutation resolver");
 
