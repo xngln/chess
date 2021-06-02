@@ -1,6 +1,38 @@
 use argonautica::Hasher;
+use async_graphql::Result;
+use jsonwebtoken as jwt;
 use rand::Rng;
+use serde;
 use std::env;
+use std::fmt;
+
+#[derive(Clone, PartialEq)]
+pub enum Role {
+    User,
+}
+
+impl Role {
+    pub fn from_str(role: &str) -> Role {
+        match role {
+            _ => Role::User,
+        }
+    }
+}
+
+impl fmt::Display for Role {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Role::User => write!(f, "User"),
+        }
+    }
+}
+
+#[derive(Debug, serde::Deserialize, serde::Serialize)]
+struct Claims {
+    sub: String,
+    role: String,
+    exp: usize,
+}
 
 pub fn hash_password(password: String) -> String {
     let mut hasher = Hasher::default();
