@@ -4,6 +4,7 @@ use async_graphql_warp::{BadRequest, Response};
 use dotenv::dotenv;
 use http::StatusCode;
 use std::convert::Infallible;
+use std::env;
 use warp::{Filter, Rejection, http::Response as HttpResponse};
 
 mod db;
@@ -16,9 +17,11 @@ async fn main() {
     dotenv().ok();
 
     let conn_pool = db::create_connection_pool().await;
+    let JWT_SECRET = env::var("JWT_SECRET").expect("Failed to get JWT_SECRET from env");
 
     let schema = Schema::build(model::QueryRoot, model::MutationRoot, EmptySubscription)
         .data(conn_pool)
+        .data(JWT_SECRET)
         .finish();
 
     println!("Playground: http://localhost:8000");

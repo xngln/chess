@@ -1,5 +1,6 @@
 use argonautica::Hasher;
 use async_graphql::Result;
+use crate::error::Error;
 use jsonwebtoken as jwt;
 use rand::Rng;
 use serde;
@@ -61,4 +62,23 @@ pub fn generate_rand_salt() -> String {
         .collect();
 
     salt
+}
+
+pub fn create_jwt(user_id: &str, role: &Role) -> Result<String, Error> {
+    let jwt_secret = env::var("JWT_SECRET").expect("Failed to get JWT_SECRET from env");
+
+    let expiration = chrono::Utc::now()
+        .checked_add_signed(chrono::Duration::seconds(30))
+        .expect("valid timestamp")
+        .timestamp();
+
+    let claims = Claims {
+        sub: user_id.to_owned(),
+        role: role.to_string(),
+        exp: expiration as usize,
+    };
+
+    let header = jwt::Header::new(jwt::Algorithm::HS512);
+    jwt::encode(&header, &claims, &jwt::EncodingKey::from_secret(jwt_secret.as_bytes()))
+        .map_err(|_| Error::JWTTokenCreationError)
 }
