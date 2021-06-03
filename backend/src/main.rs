@@ -9,6 +9,7 @@ use warp::{Filter, Rejection, http::Response as HttpResponse};
 mod db;
 mod model;
 mod auth;
+mod error;
 
 #[tokio::main]
 async fn main() {
