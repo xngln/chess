@@ -65,3 +65,50 @@ RETURNING id
 
     Ok(record.id)
 }
+
+async fn get_user_by_username(pool: &PgPool, username: String) -> Result<User> {
+    let record = sqlx::query!(
+        r#"
+SELECT *
+FROM users
+WHERE username = $1
+        "#,
+        username
+    )
+    .fetch_one(pool)
+    .await?;
+
+    let user = User {
+        id: ID::from(record.id.to_string()),
+        username: match record.username {
+            Some(name) => name,
+            None       => panic!("User record retrieved from the database has no username") 
+        },
+        elo: match record.elo {
+            Some(x) => x as u16,
+            None    => 1200,
+        },
+        wins: match record.wins {
+            Some(x) => x as u32,
+            None    => 0,
+        },
+        losses: match record.losses {
+            Some(x) => x as u32,
+            None    => 0,
+        },
+        draws: match record.draws {
+            Some(x) => x as u32,
+            None    => 0,
+        },
+        password_hash: match record.password_hash {
+            Some(password) => password,
+            None           => panic!("User record retrieved from the database has no password hash"),
+        },
+        salt: match record.salt {
+            Some(salt) => salt,
+            None       => panic!("User record retrieved from the database has no salt"),
+        }
+    };
+
+    Ok(user)
+}
