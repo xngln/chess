@@ -1,16 +1,36 @@
+use async_graphql::{ErrorExtensions, FieldError};
 use thiserror::Error;
 
-#[derive(Error, Debug)]
+#[derive(Debug, Error)]
 pub enum Error {
     #[error("wrong credentials")]
-    WrongCredentialsError,
+    WrongCredentials,
 
     #[error("jwt token creation error")]
-    JWTTokenCreationError,
+    JWTTokenCreation,
 
     #[error("no auth header")]
-    InvalidAuthHeaderError,
+    InvalidAuthHeader,
 
     #[error("no permission")]
-    NoPermissionError,
+    NoPermission,
+
+    #[error("internal server error")]
+    ServerError,
+
+    #[error("user not found")]
+    UserNotFound,
+}
+
+impl ErrorExtensions for Error {
+    fn extend(&self) -> FieldError {
+        self.extend_with(|err, e| match err {
+            Error::WrongCredentials  => e.set("code", "UNAUTHORIZED"),
+            Error::JWTTokenCreation  => e.set("code", "INTERNAL_SERVER_ERROR"),
+            Error::InvalidAuthHeader => e.set("code", "UNAUTHORIZED"),
+            Error::NoPermission      => e.set("code", "UNAUTHORIZED"),
+            Error::ServerError       => e.set("code", "INTERNAL_SERVER_ERROR"),
+            Error::UserNotFound      => e.set("code", "NOT_FOUND"),
+        })
+    }
 }
