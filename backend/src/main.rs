@@ -17,11 +17,11 @@ async fn main() {
     dotenv().ok();
 
     let conn_pool = db::create_connection_pool().await;
-    let JWT_SECRET = env::var("JWT_SECRET").expect("Failed to get JWT_SECRET from env");
+    let jwt_secret = env::var("JWT_SECRET").expect("Failed to get JWT_SECRET from env");
 
     let schema = Schema::build(model::QueryRoot, model::MutationRoot, EmptySubscription)
         .data(conn_pool)
-        .data(JWT_SECRET)
+        .data(jwt_secret)
         .finish();
 
     println!("Playground: http://localhost:8000");
