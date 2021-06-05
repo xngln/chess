@@ -45,6 +45,25 @@ impl super::MutationRoot {
 
         create_user(&pool, username, password_hash, salt).await
     }
+
+    async fn login(&self, ctx: &Context<'_>, username: String, password: String) -> Result<String> {
+        // User Login
+        let pool = ctx.data::<PgPool>().expect("Unable to access connection inside login resolver");
+
+        match get_user_by_username(&pool, username).await {
+            Ok(user) => {
+                if !auth::verify_password(password, user.salt, user.password_hash).expect("Could not verify password") {
+                    // wrong password
+                    return Err(Error::WrongCredentials.extend());
+                }
+
+                let jwt = auth::create_jwt(&user.id.to_string(), &auth::Role::User).expect("Failed to create jwt");
+                Ok(jwt)
+            },
+            // unable to get user by username
+            Err(e) => Err(Error::UserNotFound.extend()),
+        }
+    }
 }
 
 async fn create_user(pool: &PgPool, username: String, password_hash: String, salt: &String) -> Result<String> {
