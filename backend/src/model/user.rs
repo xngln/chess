@@ -38,10 +38,10 @@ impl super::QueryRoot {
 impl super::MutationRoot {
     async fn signup(&self,  ctx: &Context<'_>, username: String, password: String) -> Result<String> {
         // User signup
-        let salt = auth::generate_rand_salt();
-        let password_hash = auth::hash_password(password);
+        let salt = &auth::generate_rand_salt();
+        let password_hash = auth::hash_password(password, salt);
 
-        let pool = ctx.data::<PgPool>().expect("Unable to access connection pool inside mutation resolver");
+        let pool = ctx.data::<PgPool>().expect("Unable to access connection pool inside signup resolver");
 
         create_user(&pool, username, password_hash, salt).await
     }
