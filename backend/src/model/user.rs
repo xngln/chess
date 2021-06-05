@@ -1,5 +1,6 @@
+use async_graphql::{Context, ErrorExtensions, Object, SimpleObject, ID, Result};
 use crate::auth;
-use async_graphql::{Context, Object, SimpleObject, ID, Result};
+use crate::error::Error;
 use sqlx::postgres::PgPool;
 
 #[derive(Clone, SimpleObject)]
