@@ -65,7 +65,7 @@ pub fn generate_rand_salt() -> String {
     salt
 }
 
-pub fn create_jwt(user_id: &str, role: &Role) -> Result<String, Error> {
+pub fn create_jwt(user_id: &str, role: &Role) -> Result<String> {
     let jwt_secret = env::var("JWT_SECRET").expect("Failed to get JWT_SECRET from env");
 
     let expiration = chrono::Utc::now()
@@ -81,5 +81,5 @@ pub fn create_jwt(user_id: &str, role: &Role) -> Result<String, Error> {
 
     let header = jwt::Header::new(jwt::Algorithm::HS512);
     jwt::encode(&header, &claims, &jwt::EncodingKey::from_secret(jwt_secret.as_bytes()))
-        .map_err(|_| Error::JWTTokenCreationError)
+        .map_err(|_| Error::JWTTokenCreation.extend())
 }
