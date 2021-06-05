@@ -1,5 +1,5 @@
-use argonautica::Hasher;
-use async_graphql::Result;
+use argonautica::{Hasher, input::Salt};
+use async_graphql::{ErrorExtensions, Result};
 use crate::error::Error;
 use jsonwebtoken as jwt;
 use rand::Rng;
