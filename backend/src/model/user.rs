@@ -36,7 +36,7 @@ impl super::QueryRoot {
 
 #[Object]
 impl super::MutationRoot {
-    async fn signup(&self,  ctx: &Context<'_>, username: String, password: String) -> Result<i64> {
+    async fn signup(&self,  ctx: &Context<'_>, username: String, password: String) -> Result<String> {
         // User signup
         let salt = auth::generate_rand_salt();
         let password_hash = auth::hash_password(password);
@@ -47,7 +47,7 @@ impl super::MutationRoot {
     }
 }
 
-async fn create_user(pool: &PgPool, username: String, password_hash: String, salt: String) -> Result<i64> {
+async fn create_user(pool: &PgPool, username: String, password_hash: String, salt: &String) -> Result<String> {
     let init_elo = 1200i32;
     let init_wins = 0i32;
     let init_losses = 0i32;
@@ -64,7 +64,7 @@ RETURNING id
     .fetch_one(pool)
     .await?;
 
-    Ok(record.id)
+    Ok(record.id.to_string())
 }
 
 async fn get_user_by_username(pool: &PgPool, username: String) -> Result<User> {
