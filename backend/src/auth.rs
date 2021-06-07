@@ -36,10 +36,9 @@ struct Claims {
 }
 
 pub fn hash_password(password: String, salt: &String) -> String {
-    let mut hasher = Hasher::default();
     let argo2_key = env::var("ARGO2_KEY").expect("Couldn't get argo2 hash key");
 
-    hasher
+    Hasher::new()
         .with_password(password)
         .with_secret_key(argo2_key)
         .with_salt(Salt::from(salt))
