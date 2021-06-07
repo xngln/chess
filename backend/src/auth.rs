@@ -1,4 +1,4 @@
-use argonautica::{Hasher, input::Salt};
+use argonautica::{Hasher, input::Salt, Verifier};
 use async_graphql::{ErrorExtensions, Result};
 use crate::error::Error;
 use jsonwebtoken as jwt;
@@ -45,6 +45,21 @@ pub fn hash_password(password: String, salt: &String) -> String {
         .with_salt(Salt::from(salt))
         .hash()
         .unwrap()
+}
+
+pub fn verify_password(password: String, hash: String) -> Result<bool, Error> {
+    let argo2_key = env::var("ARGO2_KEY").expect("Couldn't get argo2 hash key");
+
+    let mut verifier = Verifier::new();
+
+    let is_valid = verifier
+        .with_secret_key(argo2_key)
+        .with_hash(hash)
+        .with_password(password)
+        .verify()
+        .expect("Unable to verify password");
+
+    Ok(is_valid)
 }
 
 pub fn generate_rand_salt() -> String {

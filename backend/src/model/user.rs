@@ -52,7 +52,7 @@ impl super::MutationRoot {
 
         match get_user_by_username(&pool, username).await {
             Ok(user) => {
-                if !auth::verify_password(password, user.salt, user.password_hash).expect("Could not verify password") {
+                if !auth::verify_password(password, user.password_hash).expect("Could not verify password") {
                     // wrong password
                     return Err(Error::WrongCredentials.extend());
                 }
