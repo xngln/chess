@@ -72,6 +72,7 @@ async fn create_user(pool: &PgPool, username: String, password_hash: String, sal
     let init_losses = 0i32;
     let init_draws = 0i32;
 
+	// TODO: move query to db file
     let record = sqlx::query!(
         r#"
 INSERT INTO users ( username, elo, wins, losses, draws, password_hash, salt)
@@ -87,6 +88,7 @@ RETURNING id
 }
 
 async fn get_user_by_username(pool: &PgPool, username: String) -> Result<User> {
+	// TODO: move query object into db file, use query_as! instead of query -> https://github.com/launchbadge/sqlx#compile-time-verification 
     let record = sqlx::query!(
         r#"
 SELECT *
