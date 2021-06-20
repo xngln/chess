@@ -19,7 +19,11 @@ async fn main() {
     let conn_pool = db::create_connection_pool().await;
     let jwt_secret = env::var("JWT_SECRET").expect("Failed to get JWT_SECRET from env");
 
-    let schema = Schema::build(model::QueryRoot, model::MutationRoot, EmptySubscription)
+    let schema = Schema::build(
+		model::QueryRoot::default(), 
+		model::MutationRoot::default(), 
+		EmptySubscription
+	)
         .data(conn_pool)
         .data(jwt_secret)
         .finish();

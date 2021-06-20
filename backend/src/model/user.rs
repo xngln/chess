@@ -11,12 +11,10 @@ pub struct User {
     wins: u32,
     losses: u32,
     draws: u32,
-    password_hash: String,
-    salt: String,
 }
 
 #[Object]
-impl super::QueryRoot {
+impl super::UserQuery {
     async fn user(&self, username: String) -> Result<Option<User>> {
         // Get a user by username from db
         let user = User {
@@ -26,8 +24,6 @@ impl super::QueryRoot {
             wins: 10,
             losses: 7,
             draws: 9,
-            password_hash: "thepasswordhash".to_string(),
-            salt: "saltyboi".to_string(),
         };
 
         Ok(Some(user))
@@ -35,15 +31,14 @@ impl super::QueryRoot {
 }
 
 #[Object]
-impl super::MutationRoot {
+impl super::UserMutation {
     async fn signup(&self,  ctx: &Context<'_>, username: String, password: String) -> Result<String> {
         // User signup
-        let salt = &auth::generate_rand_salt();
-        let password_hash = auth::hash_password(password, salt);
+        let password_hash = auth::hash_password(password);
 
         let pool = ctx.data::<PgPool>().expect("Unable to access connection pool inside signup resolver");
 
-        create_user(&pool, username, password_hash, salt).await
+        create_user(&pool, username, password_hash).await
     }
 
     async fn login(&self, ctx: &Context<'_>, username: String, password: String) -> Result<String> {
@@ -52,7 +47,8 @@ impl super::MutationRoot {
 
         match get_user_by_username(&pool, username).await {
             Ok(user) => {
-                if !auth::verify_password(password, user.password_hash).expect("Could not verify password") {
+				// !!!!!!!!!!!!!!!!!!!!!! fix
+                if !auth::verify_password(password, user.username).expect("Could not verify password") {
                     // wrong password
                     return Err(Error::WrongCredentials.extend());
                 }
@@ -66,7 +62,7 @@ impl super::MutationRoot {
     }
 }
 
-async fn create_user(pool: &PgPool, username: String, password_hash: String, salt: &String) -> Result<String> {
+async fn create_user(pool: &PgPool, username: String, password_hash: String) -> Result<String> {
     let init_elo = 1200i32;
     let init_wins = 0i32;
     let init_losses = 0i32;
@@ -79,7 +75,7 @@ INSERT INTO users ( username, elo, wins, losses, draws, password_hash, salt)
 VALUES ( $1, $2, $3, $4, $5, $6, $7 )
 RETURNING id
         "#,
-        username, init_elo, init_wins, init_losses, init_draws, password_hash, salt
+        username, init_elo, init_wins, init_losses, init_draws, password_hash
     )
     .fetch_one(pool)
     .await?;
@@ -122,14 +118,6 @@ WHERE username = $1
             Some(x) => x as u32,
             None    => 0,
         },
-        password_hash: match record.password_hash {
-            Some(password) => password,
-            None           => panic!("User record retrieved from the database has no password hash"),
-        },
-        salt: match record.salt {
-            Some(salt) => salt,
-            None       => panic!("User record retrieved from the database has no salt"),
-        }
     };
 
     Ok(user)

@@ -1,11 +1,12 @@
-use argonautica::{Hasher, input::Salt, Verifier};
+use argonautica::{Hasher, Verifier};
 use async_graphql::{ErrorExtensions, Result};
 use crate::error::Error;
 use jsonwebtoken as jwt;
-use rand::Rng;
 use serde;
 use std::env;
 use std::fmt;
+
+const BEARER: &str = "Bearer ";
 
 #[derive(Clone, PartialEq)]
 pub enum Role {
@@ -35,13 +36,12 @@ struct Claims {
     exp: usize,
 }
 
-pub fn hash_password(password: String, salt: &String) -> String {
+pub fn hash_password(password: String) -> String {
     let argo2_key = env::var("ARGO2_KEY").expect("Couldn't get argo2 hash key");
 
     Hasher::new()
         .with_password(password)
         .with_secret_key(argo2_key)
-        .with_salt(Salt::from(salt))
         .hash()
         .unwrap()
 }
@@ -59,24 +59,6 @@ pub fn verify_password(password: String, hash: String) -> Result<bool, Error> {
         .expect("Unable to verify password");
 
     Ok(is_valid)
-}
-
-pub fn generate_rand_salt() -> String {
-    const CHARSET: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-                           abcdefghijklmnopqrstuvwxyz\
-                           0123456789)(*&^%$#@!~";
-    
-    const PASSWORD_LEN: usize = 30;
-    let mut rng = rand::thread_rng();
-
-    let salt: String = (0..PASSWORD_LEN)
-        .map(|_| {
-            let idx = rng.gen_range(0..CHARSET.len());
-            CHARSET[idx] as char
-        })
-        .collect();
-
-    salt
 }
 
 pub fn create_jwt(user_id: &str, role: &Role) -> Result<String> {
