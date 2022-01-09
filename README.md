@@ -30,3 +30,4 @@ UI uses Rust WASM on the [Seed](https://github.com/seed-rs/seed) framework with 
 - [ ] implement elo system
 - [ ] implement different time controls
 - [ ] implement pre-moving
+- [ ] implement move history (see what the previous moves were)
